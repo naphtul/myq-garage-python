@@ -14,7 +14,6 @@ jobs:
           token: ${{ secrets.PAT }}
       - run: python3 -m pip install --upgrade build
       - run: python3 -m build
-      - run: ls -la
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
@@ -23,7 +22,8 @@ jobs:
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
+          token: ${{ secrets.TAG }}
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
-          artifacts: "myq-*.tar.gz,myq-*-py3-none-any.whl"
+          artifacts: "dist/*.tar.gz,dist/*-py3-none-any.whl"
