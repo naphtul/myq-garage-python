@@ -6,9 +6,11 @@ from aiohttp import ClientSession
 
 
 class MyQ:
-    def __init__(self):
-        self.user = os.environ.get('MYQ_USER')
-        self.pwd = os.environ.get('MYQ_PASS')
+    def __init__(self, user: str = '', pwd: str = ''):
+        self.user = user if user else os.environ.get('MYQ_USER')
+        self.pwd = pwd if pwd else os.environ.get('MYQ_PASS')
+        if not (self.user and self.pwd):
+            raise ValueError('Username and Password params are not properly defined.')
         self.legend = {}
         self.get_garage_doors()
         self.myq = None
@@ -33,7 +35,7 @@ class MyQ:
 
 
 if __name__ == '__main__':
-    my_q = MyQ()
+    my_q = MyQ('', '')
     asyncio.get_event_loop().run_until_complete(my_q.get_garage_doors())
     asyncio.get_event_loop().run_until_complete(my_q.open_garage_door('Grass'))
     asyncio.get_event_loop().run_until_complete(my_q.close_garage_door('Grass'))
